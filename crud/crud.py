@@ -37,9 +37,7 @@ def usuarios():
 
 @bp.route('/api/agrega_usuarios/<string:nombre>/<string:apellido>/<string:email>/<string:fechaNac>', methods=['GET','POST'])
 def agrega_usuarios(nombre, apellido, email, fechaNac):
-    db, c = get_db()
-    
-       
+    db, c = get_db()   
     if request.method == 'POST':
         try:    
             fechaNac = datetime.strptime(fechaNac, '%Y-%m-%d')
@@ -86,21 +84,30 @@ def usuario(id):
 def actualiza_usuario(id, nombre, apellido, email, fechaNac):
 
     if request.method == 'PUT':
-        try:  
-            db, c = get_db()
-            sql='UPDATE usuarios set nombre = %s, apellido = %s, email = %s, fechaNac = %s  WHERE id=%s'
-           
-            try: 
-                c.execute(sql,(nombre, apellido, email, fechaNac , id))
-                db.commit()
-            
-                return jsonify({'message' : 'Datos actualizados correctamente.'})
-            
-            except Exception as e:
-                return jsonify({'Detalle Error' : e})         
+        try:    
+            fechaNac = datetime.strptime(fechaNac, '%Y-%m-%d')
 
+            valido = validate_email(email)
+            if valido:
+                try:  
+                    db, c = get_db()
+                    sql='UPDATE usuarios set nombre = %s, apellido = %s, email = %s, fechaNac = %s  WHERE id=%s'
+                
+                    try: 
+                        c.execute(sql,(nombre, apellido, email, fechaNac , id))
+                        db.commit()
+                    
+                        return jsonify({'message' : 'Datos actualizados correctamente.'})
+                    
+                    except Exception as e:
+                        return jsonify({'Detalle Error' : e})         
+
+                except Exception as e:
+                    return jsonify({'Detalle Error' : e})
+            else:
+                return jsonify({"message" : "Ingrese un email valido"})
         except Exception as e:
-            return jsonify({'Detalle Error' : e})
+            return jsonify({'message' : 'fecha con formato erroneo, intente: YYYY-mm-dd'})
 
     
 @bp.route('/api/borrar_usuario/<string:id>', methods=['DELETE'])
