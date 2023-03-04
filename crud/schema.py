@@ -21,12 +21,11 @@ instructions = [
     """
        
     CREATE TABLE `usuarios` (
-        `id` VARCHAR(36) NOT NULL,
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
         `nombre` varchar(255) DEFAULT NULL,
         `apellido` VARCHAR(50) NOT NULL,
         `email` VARCHAR(255) NOT NULL,
-        `fechanac` DATETIME,
-        PRIMARY KEY (`id`)
+        `fechanac` DATETIME
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
     
     """
